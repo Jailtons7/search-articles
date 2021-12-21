@@ -169,18 +169,50 @@ class TblEspecialidade(models.Model):
 
 
 class TblArtigoPublicadoAreaConhecimento(models.Model):
-    pass
+    CodArtigoPublicado = models.ForeignKey("TblArtigoPublicado", on_delete=models.PROTECT)
+    CodGrandeArea = models.ForeignKey("TblGrandeArea", on_delete=models.PROTECT)
+    CodArea = models.ForeignKey("TblArea", on_delete=models.PROTECT)
+
+    class Meta:
+        verbose_name = "Artigo publicado por área do conhecimento"
+        verbose_name_plural = "Artigos publicados por área do conhecimento"
+
+    def __str__(self):
+        return f"{self.CodArtigoPublicado.CodTitulosArtigos.DscTitulosArtigos[:25]} -> " \
+               f"{self.CodGrandeArea.DscGrandeArea}"
 
 
 class TblSituacao(models.Model):
-    pass
+    CodSituacao = models.AutoField(primary_key=True)
+    DscSituacao = models.CharField(max_length=10)
+
+    class Meta:
+        verbose_name = "Situação"
+        verbose_name_plural = "Situações"
+
+    def __str__(self):
+        return self.DscSituacao
 
 
-class TblPalavraChaveArtigo(models.Model):
-    pass
+class TblPalavraChaveArt(models.Model):
+    CodPalavrasChavesArtigos = models.AutoField(primary_key=True)
+    DscArtigoPalavrasChave = models.CharField(max_length=60)
+
+    class Meta:
+        verbose_name = "Plavra chave"
+        verbose_name_plural = "Plavras chaves"
+
+    def __str__(self):
+        return self.DscArtigoPalavrasChave
 
 
-class TblArtigoPublicadoPalavraChave(models.Model):
-    pass
+class TblArtigoPublicadoPalavrasChave(models.Model):
+    CodArtigoPublicado = models.ForeignKey("TblArtigoPublicado", on_delete=models.PROTECT)
+    CodPalavrasChavesArtigos = models.ForeignKey("TblPalavraChaveArt", on_delete=models.PROTECT)
 
+    class Meta:
+        verbose_name = "Artigo Publicado - Palavra-Chave"
+        verbose_name_plural = "Artigos Publicados - Palavras-Chaves"
 
+    def __str__(self):
+        return f"{self.CodArtigoPublicado.CodIssn} - {self.CodPalavrasChavesArtigos.DscArtigoPalavrasChave}"
