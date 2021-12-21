@@ -95,24 +95,77 @@ class TblProjetos(models.Model):
     pass
 
 
-class TblEspecialidade(models.Model):
-    pass
-
-
 class TblIndiceJrc2019(models.Model):
     pass
 
 
-class TblSubArea(models.Model):
-    pass
+class TblGrandeArea(models.Model):
+    CodGrandeArea = models.AutoField(primary_key=True)
+    DscGrandeArea = models.CharField(max_length=27)
+
+    class Meta:
+        verbose_name = "Grande Áera"
+        verbose_name_plural = "Grandes Áeras"
+
+    def __str__(self):
+        return self.DscGrandeArea
 
 
 class TblArea(models.Model):
-    pass
+    CodGrandeArea = models.ForeignKey("TblGrandeArea", on_delete=models.PROTECT)
+    CodArea = models.IntegerField()
+    DscArea = models.CharField(max_length=42)
+
+    class Meta:
+        verbose_name = "Área"
+        verbose_name_plural = "Áreas"
+        constraints = [
+            models.UniqueConstraint(fields=["CodGrandeArea", "CodArea"], name="CodGrandeArea_CodArea")
+        ]
+
+    def __str__(self):
+        return self.DscArea
 
 
-class TblGrandeArea(models.Model):
-    pass
+class TblSubArea(models.Model):
+    CodGrandeArea = models.ForeignKey("TblGrandeArea", on_delete=models.PROTECT)
+    CodArea = models.ForeignKey("TblArea", on_delete=models.PROTECT)
+    CodSubArea = models.IntegerField()
+    DscSubArea = models.CharField(max_length=64)
+
+    class Meta:
+        verbose_name = "Sub Área"
+        verbose_name_plural = "Sub Áreas"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["CodGrandeArea", "CodArea", "CodSubArea"],
+                name="CodGrandeArea_CodArea_CodSubArea"
+            )
+        ]
+
+    def __str__(self):
+        return self.DscSubArea
+
+
+class TblEspecialidade(models.Model):
+    CodGrandeArea = models.ForeignKey("TblGrandeArea", on_delete=models.PROTECT)
+    CodArea = models.ForeignKey("TblArea", on_delete=models.PROTECT)
+    CodSubArea = models.ForeignKey("TblSubArea", on_delete=models.PROTECT)
+    CodEspecialidade = models.IntegerField()
+    DscEspecialidade = models.CharField(max_length=85)
+
+    class Meta:
+        verbose_name = "Sub Área"
+        verbose_name_plural = "Sub Áreas"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["CodGrandeArea", "CodArea", "CodSubArea", "CodEspecialidade"],
+                name="CodGrandeArea_CodArea_CodSubArea_CodEspecialidade"
+            )
+        ]
+
+    def __str__(self):
+        return self.DscEspecialidade
 
 
 class TblArtigoPublicadoAreaConhecimento(models.Model):
