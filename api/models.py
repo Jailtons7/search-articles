@@ -3,7 +3,7 @@ from django.db import models
 
 SIM_NAO_OPTIONS = (
     ("SIM", "SIM"),
-    ("NAO", "NÂO"),
+    ("NAO", "NÃO"),
 )
 
 
@@ -78,7 +78,7 @@ class TblArtigoPublicado(models.Model):
     CodSiglaAtuacaoProfissionalLattes = models.ForeignKey("TblOrgaoIeExerc", on_delete=models.PROTECT)
     CodIssn = models.ForeignKey("TblIssn", on_delete=models.PROTECT)
     CodTitulosArtigos = models.ForeignKey("TblTitulosArtigos", on_delete=models.PROTECT)
-    AnoPublicacaoArtigo = models.CharField(max_length=4)
+    AnoPublicacaoArtigo = models.CharField(max_length=4, db_index=True)
 
     class Meta:
         verbose_name = "Artigo Publicado"
@@ -89,14 +89,6 @@ class TblArtigoPublicado(models.Model):
 
     def get_art(self) -> str:
         return self.ART[0:40] + "..." if len(self.ART) > 40 else self.ART
-
-
-class TblProjetos(models.Model):
-    pass
-
-
-class TblIndiceJrc2019(models.Model):
-    pass
 
 
 class TblGrandeArea(models.Model):
