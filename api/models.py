@@ -8,8 +8,8 @@ SIM_NAO_OPTIONS = (
 
 
 class TblOrgaoIeExerc(models.Model):
-    codSiglaOrgaoIE = models.CharField("Código da IE", max_length=10, primary_key=True)
-    nomOrgaoIEExerc = models.CharField("Nome da IE", max_length=50)
+    CodSiglaOrgaoIE = models.CharField("Código da IE", max_length=10, primary_key=True)
+    NomOrgaoIEExerc = models.CharField("Nome da IE", max_length=50)
 
     class Meta:
         verbose_name = "Instituição de Ensino de Exercício"
