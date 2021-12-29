@@ -16,7 +16,7 @@ class TblOrgaoIeExerc(models.Model):
         verbose_name_plural = "Instituições de Ensino de Exercício"
 
     def __str__(self):
-        return f"{self.nomOrgaoIEExerc} - {self.codSiglaOrgaoIE}"
+        return f"{self.NomOrgaoIEExerc} - {self.CodSiglaOrgaoIE}"
 
 
 class TblCargos(models.Model):
