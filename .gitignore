@@ -96,3 +96,4 @@ time
 
 node_modules/
 
+api/fixtures/*
