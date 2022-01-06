@@ -75,10 +75,13 @@ class TblArtigoPublicado(models.Model):
     # ver o que significa o campo ID_ARTIGO na tabela original
     TipArtigoRelevancia = models.CharField(max_length=3, choices=SIM_NAO_OPTIONS)
     TipArtigoDivulgacaoCientifica = models.CharField(max_length=3, choices=SIM_NAO_OPTIONS)
+    AnoPublicacaoArtigo = models.CharField(max_length=4, db_index=True)
+
     CodSiglaAtuacaoProfissionalLattes = models.ForeignKey("TblOrgaoIeExerc", on_delete=models.PROTECT)
     CodIssn = models.ForeignKey("TblIssn", on_delete=models.PROTECT)
     CodTitulosArtigos = models.ForeignKey("TblTitulosArtigos", on_delete=models.PROTECT)
-    AnoPublicacaoArtigo = models.CharField(max_length=4, db_index=True)
+    CodIdioma = models.ForeignKey("TblIdioma", on_delete=models.SET_NULL, null=True)
+    CodServidor = models.ForeignKey("TblServidores", on_delete=models.PROTECT)
 
     class Meta:
         verbose_name = "Artigo Publicado"
@@ -105,7 +108,7 @@ class TblGrandeArea(models.Model):
 
 class TblArea(models.Model):
     CodGrandeArea = models.ForeignKey("TblGrandeArea", on_delete=models.PROTECT)
-    CodArea = models.IntegerField()
+    CodArea = models.AutoField(primary_key=True)
     DscArea = models.CharField(max_length=42)
 
     class Meta:
@@ -122,7 +125,7 @@ class TblArea(models.Model):
 class TblSubArea(models.Model):
     CodGrandeArea = models.ForeignKey("TblGrandeArea", on_delete=models.PROTECT)
     CodArea = models.ForeignKey("TblArea", on_delete=models.PROTECT)
-    CodSubArea = models.IntegerField()
+    CodSubArea = models.AutoField(primary_key=True)
     DscSubArea = models.CharField(max_length=64)
 
     class Meta:
@@ -143,7 +146,7 @@ class TblEspecialidade(models.Model):
     CodGrandeArea = models.ForeignKey("TblGrandeArea", on_delete=models.PROTECT)
     CodArea = models.ForeignKey("TblArea", on_delete=models.PROTECT)
     CodSubArea = models.ForeignKey("TblSubArea", on_delete=models.PROTECT)
-    CodEspecialidade = models.IntegerField()
+    CodEspecialidade = models.AutoField(primary_key=True)
     DscEspecialidade = models.CharField(max_length=85)
 
     class Meta:
@@ -208,3 +211,15 @@ class TblArtigoPublicadoPalavrasChave(models.Model):
 
     def __str__(self):
         return f"{self.CodArtigoPublicado.CodIssn} - {self.CodPalavrasChavesArtigos.DscArtigoPalavrasChave}"
+
+
+class TblIdioma(models.Model):
+    CodIdioma = models.AutoField(primary_key=True)
+    DscIdioma = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.DscIdioma
+
+    class Meta:
+        verbose_name = "Idioma"
+        verbose_name_plural = "Idiomas"
