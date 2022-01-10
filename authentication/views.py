@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.permissions import AllowAny
 
-# Create your views here.
+from authentication.serializers import ObtainTokenPairWithEmailSerializer
+
+
+class ObtainTokenPairsWithEmailView(TokenObtainPairView):
+    permission_classes = (AllowAny,)
+    serializer_class = ObtainTokenPairWithEmailSerializer
