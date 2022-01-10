@@ -24,18 +24,18 @@ class SearchGroup(Group):
         verbose_name_plural = _("Groups")
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class CustomUser(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(
         verbose_name=_('e-mail address'), unique=True,
         error_messages={'unique': _('this e-mail already exists')}
     )
     cpf = models.CharField(
-        verbose_name=_('CPF'), unique=True,
-        error_messages={'unique': _('this CPF already exists')}
+        verbose_name=_('CPF'), max_length=11, help_text=_('only numbers'),
+        unique=True, error_messages={'unique': _('this CPF already exists')}
     )
     phone = models.CharField(
-        verbose_name=_('phone'), unique=True, null=True, blank=True,
+        verbose_name=_('phone'), max_length=19, unique=True, null=True, blank=True,
         error_messages={'unique': _('this phone number already exists')}
     )
     first_name = models.CharField(_('first name'), max_length=50)
@@ -52,7 +52,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         help_text=_('designates whether this user has confirmed his account.')
     )
     groups = models.ManyToManyField(
-        'SearchGroups',
+        'SearchGroup',
         verbose_name=_('groups'),
         related_name='user_set',
         related_query_name='user',
