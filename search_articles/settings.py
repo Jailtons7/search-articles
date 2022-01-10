@@ -31,6 +31,8 @@ SECRET_KEY = env.str("SECRET_KEY")
 DEBUG = env.bool("DEBUG", False)
 
 ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
     '10.0.1.10'
 ]
 
@@ -47,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'api',
+    'authentication',
 ]
 
 MIDDLEWARE = [
@@ -135,6 +138,8 @@ STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
+
+AUTH_USER_MODEL = 'authentication.CustomUser'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
