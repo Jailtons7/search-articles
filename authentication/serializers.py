@@ -15,10 +15,11 @@ class ObtainTokenPairWithEmailSerializer(TokenObtainPairSerializer):
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
-        fields = ('email', 'cpf', 'phone', 'first_name', 'last_name',)
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ('email', 'cpf', 'phone', 'first_name', 'last_name', 'password',)
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
