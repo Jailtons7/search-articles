@@ -1,3 +1,5 @@
+import re
+
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -28,3 +30,19 @@ class CustomUserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+
+    def update(self, instance, validated_data):
+        for field in self.Meta.fields:
+            if field != 'password':
+                setattr(instance, field, validated_data.get(field, getattr(instance, field)))
+        instance.save()
+        return instance
+
+    def validate_cpf(self, value):
+        """
+        Check that cpf has only numbers
+        """
+        pattern = r'\d{11}'
+        if not bool(re.match(pattern, value)):
+            raise serializers.ValidationError('CPF must have only numbers')
+        return value
