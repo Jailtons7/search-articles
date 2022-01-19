@@ -53,3 +53,92 @@ Below there are some examples of use of this command.
 ```shell
 
 ```
+
+### 3. API calls
+
+#### 3.1. Authentication
+
+##### 3.1.1. Create User
+```shell
+POST /authentication/users/create/
+{
+    "first_name": "name",
+    "last_name": "surname",
+    "email": "name@example.com",
+    "cpf": "12345678912",
+    "phone": "+55 (82) 3333 3333",
+    "password": "my-secret"
+}
+```
+Response: the created user with status code 201.
+
+##### 3.1.2. Obtain token
+```shell
+POST /authentication/token/obtain/
+{
+  "email": "name@example.com",
+  "password": "my-secret"
+}
+```
+Response: the access and refresh tokens with status code 200.
+
+##### 3.1.3. Refresh token
+```shell
+POST /authentication/token/refresh/
+{
+  "refresh": refresh_token
+}
+```
+Response: the access and refresh tokens with status code 200.
+
+##### 3.1.4. Update User
+```shell
+POST /authentication/users/update/
+# headers
+{
+  'Authorization': 'Bearer ' + access_token
+}
+# body
+{
+    "first_name": "name2",
+    "last_name": "surname2",
+    "email": "name2@example.com",
+    "cpf": "12345678912",
+    "phone": "+55 (82) 3333 3333",
+    "password": "my-secret"
+}
+```
+Response: the user with status code 200.
+
+##### 3.1.5. Get User
+```shell
+POST /authentication/users/
+# headers
+{
+  'Authorization': 'Bearer ' + access_token
+}
+```
+Response: the user with status code 200.
+
+##### 3.1.6. Delete User
+```shell
+DELETE /authentication/users/delete/
+# headers
+{
+  'Authorization': 'Bearer ' + access_token
+}
+```
+Response: no content with status code 204.
+
+### 3.2. Articles
+
+#### 3.2.1 Get Articles
+
+```shell
+GET /api/v1/articles/
+# headers
+{
+  'Authorization': 'Bearer ' + access_token
+}
+```
+Methods POST, PUT and DELETE are not allowed.
