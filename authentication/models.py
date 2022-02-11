@@ -38,6 +38,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         verbose_name=_('phone'), max_length=19, unique=True, null=True, blank=True,
         error_messages={'unique': _('this phone number already exists')}
     )
+    orgao = models.ForeignKey('api.TblOrgaoIeExerc', on_delete=models.SET_NULL, null=True, blank=True)
     first_name = models.CharField(_('first name'), max_length=50)
     last_name = models.CharField(_('last name'), max_length=50)
     is_active = models.BooleanField(_('is active'), default=True)
