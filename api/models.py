@@ -1,5 +1,7 @@
 from django.db import models
 
+from lorem.text import TextLorem
+
 
 SIM_NAO_OPTIONS = (
     ("SIM", "SIM"),
@@ -42,6 +44,18 @@ class TblServidores(models.Model):
 
     def __str__(self):
         return self.NomServidor
+
+    @classmethod
+    def servidores_per_ie(cls):
+        return cls.objects.values('CodSiglaOrgaoIE').annotate(
+            total=models.Count('CodServidor')
+        ).values_list('CodSiglaOrgaoIE', 'total').order_by('total')[:10]
+
+    @classmethod
+    def professores_per_ie(cls):
+        return cls.objects.values('CodSiglaOrgaoIE').annotate(
+            total=models.Count('CodServidor')
+        ).values_list('CodSiglaOrgaoIE', 'total').order_by('total')[:10]
 
 
 class TblIssn(models.Model):
@@ -92,6 +106,57 @@ class TblArtigoPublicado(models.Model):
 
     def get_art(self) -> str:
         return self.ART[0:40] + "..." if len(self.ART) > 40 else self.ART
+
+    def get_title(self):
+        return self.CodTitulosArtigos.DscTitulosArtigos
+
+    @staticmethod
+    def get_lorem_instance():
+        return TextLorem(prange=(20, 25), trange=(9, 12))
+
+    def get_resume(self):
+        lorem = self.get_lorem_instance()
+        return lorem.paragraph()
+
+    def get_body(self):
+        lorem = self.get_lorem_instance()
+        return lorem.text()
+
+    def get_article_info(self) -> dict:
+        return {
+            'intitution': self.CodServidor.CodSiglaOrgaoIE.CodSiglaOrgaoIE,
+            'author': self.CodServidor.NomServidor,
+            'title': self.get_title(),
+            'resume': self.get_resume(),
+            'body': self.get_body()
+        }
+
+    @classmethod
+    def articles_per_orgao(cls):
+        """
+        Returns a tuple with CodSiglaOrgaoIE and the total of articles published in that institution
+        """
+        return cls.objects.values('CodServidor__CodSiglaOrgaoIE').annotate(
+            total=models.Count('CodArtigoPublicado')
+        ).values_list('CodServidor__CodSiglaOrgaoIE', 'total').order_by('-total')[:10]
+
+    @classmethod
+    def articles_per_year(cls):
+        """
+        Returns a tuple with the total of articles published per year
+        """
+        return cls.objects.values('AnoPublicacaoArtigo').annotate(
+            total=models.Count('CodArtigoPublicado')
+        ).values_list('AnoPublicacaoArtigo', 'total').order_by('-AnoPublicacaoArtigo')
+
+    @classmethod
+    def articles_per_author(cls):
+        """
+        Returns a tuple with the total of articles published per year
+        """
+        return cls.objects.values('CodServidor__NomServidor').annotate(
+            total=models.Count('CodArtigoPublicado')
+        ).values_list('CodServidor__NomServidor', 'total').order_by('-total')[:10]
 
 
 class TblGrandeArea(models.Model):
@@ -175,6 +240,15 @@ class TblArtigoPublicadoAreaConhecimento(models.Model):
     def __str__(self):
         return f"{self.CodArtigoPublicado.CodTitulosArtigos.DscTitulosArtigos[:25]} -> " \
                f"{self.CodGrandeArea.DscGrandeArea}"
+
+    @classmethod
+    def articles_per_grande_area(cls):
+        """
+        Returns tuple with DscGrandeArea and the total of articles published in that area
+        """
+        return cls.objects.values('CodGrandeArea').annotate(
+            total=models.Count('id')
+        ).values_list('CodGrandeArea__DscGrandeArea', 'total').order_by('-total')
 
 
 class TblSituacao(models.Model):
