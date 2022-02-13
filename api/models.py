@@ -47,13 +47,20 @@ class TblServidores(models.Model):
 
     @classmethod
     def servidores_per_ie(cls):
+        """
+        Returns a QuerySet with the total of 'servidores' per 'orgão'
+        teachers are included
+        """
         return cls.objects.values('CodSiglaOrgaoIE').annotate(
             total=models.Count('CodServidor')
         ).values_list('CodSiglaOrgaoIE', 'total').order_by('total')[:10]
 
     @classmethod
     def professores_per_ie(cls):
-        return cls.objects.values('CodSiglaOrgaoIE').annotate(
+        """
+        Returns a QuerySet with the total of 'professores' per 'orgão'
+        """
+        return cls.objects.filter(CodCargo=2).values('CodSiglaOrgaoIE').annotate(
             total=models.Count('CodServidor')
         ).values_list('CodSiglaOrgaoIE', 'total').order_by('total')[:10]
 
@@ -134,7 +141,7 @@ class TblArtigoPublicado(models.Model):
     @classmethod
     def articles_per_orgao(cls):
         """
-        Returns a tuple with CodSiglaOrgaoIE and the total of articles published in that institution
+        Returns a QuerySet with CodSiglaOrgaoIE and the total of articles published in that institution
         """
         return cls.objects.values('CodServidor__CodSiglaOrgaoIE').annotate(
             total=models.Count('CodArtigoPublicado')
@@ -143,7 +150,7 @@ class TblArtigoPublicado(models.Model):
     @classmethod
     def articles_per_year(cls):
         """
-        Returns a tuple with the total of articles published per year
+        Returns a QuerySet with the total of articles published per year
         """
         return cls.objects.values('AnoPublicacaoArtigo').annotate(
             total=models.Count('CodArtigoPublicado')
@@ -152,11 +159,20 @@ class TblArtigoPublicado(models.Model):
     @classmethod
     def articles_per_author(cls):
         """
-        Returns a tuple with the total of articles published per year
+        Returns a QuerySet with the total of articles published per year
         """
         return cls.objects.values('CodServidor__NomServidor').annotate(
             total=models.Count('CodArtigoPublicado')
         ).values_list('CodServidor__NomServidor', 'total').order_by('-total')[:10]
+
+    @classmethod
+    def trends_idioma(cls):
+        """
+        Returns a QuerySet with most frequent keywords
+        """
+        return cls.objects.values('CodIdioma__DscIdioma').annotate(
+            total=models.Count('CodArtigoPublicado')
+        ).values_list('CodIdioma__DscIdioma', 'total').order_by('-total')[:5]
 
 
 class TblGrandeArea(models.Model):
@@ -244,7 +260,7 @@ class TblArtigoPublicadoAreaConhecimento(models.Model):
     @classmethod
     def articles_per_grande_area(cls):
         """
-        Returns tuple with DscGrandeArea and the total of articles published in that area
+        Returns a QuerySet with DscGrandeArea and the total of articles published in that area
         """
         return cls.objects.values('CodGrandeArea').annotate(
             total=models.Count('id')
@@ -285,6 +301,15 @@ class TblArtigoPublicadoPalavrasChave(models.Model):
 
     def __str__(self):
         return f"{self.CodArtigoPublicado.CodIssn} - {self.CodPalavrasChavesArtigos.DscArtigoPalavrasChave}"
+
+    @classmethod
+    def trends_keywords(cls):
+        """
+        Returns a QuerySet with most frequent keywords
+        """
+        return cls.objects.values('CodPalavrasChavesArtigos__DscArtigoPalavrasChave').annotate(
+            total=models.Count('CodPalavrasChavesArtigos')
+        ).values_list('CodPalavrasChavesArtigos__DscArtigoPalavrasChave', 'total').order_by('-total')[:10]
 
 
 class TblIdioma(models.Model):
