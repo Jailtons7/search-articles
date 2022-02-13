@@ -40,8 +40,10 @@ class DashboardView(views.APIView):
         articles_per_grande_area = TblArtigoPublicadoAreaConhecimento.articles_per_grande_area()
         artcles_per_year = TblArtigoPublicado.articles_per_year()
         articles_per_author = TblArtigoPublicado.articles_per_author()
+        trends_idioma = TblArtigoPublicado.trends_idioma()
         servidores_per_ie = TblServidores.servidores_per_ie()
         professores_per_ie = TblServidores.professores_per_ie()
+        trends_keywords = TblArtigoPublicadoPalavrasChave.trends_keywords()
         return Response({
             'articles_per_org': articles_per_org,
             'articles_per_grande_area': articles_per_grande_area,
@@ -49,4 +51,6 @@ class DashboardView(views.APIView):
             'articles_per_author': articles_per_author,
             'servidores_per_ie': servidores_per_ie,
             'professores_per_ie': professores_per_ie,
+            'trend_keywords': trends_keywords,
+            'trends_idioma': trends_idioma,
         }, status=status.HTTP_200_OK)
