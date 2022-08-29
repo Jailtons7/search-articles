@@ -37,7 +37,8 @@ class Command(BaseCommand):
     def insert_data_to_model(self, model: models.Model, dict_data: dict):
         try:
             model.objects.create(**dict_data)
-        except IntegrityError:
+        except IntegrityError as e:
+            self.stdout.write(f'Error: {e}')
             self.stdout.write(f'{model._meta.object_name}: Integrity issue with data {dict_data}')
 
     def add_arguments(self, parser):
