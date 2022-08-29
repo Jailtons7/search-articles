@@ -78,6 +78,18 @@ class TblIssn(models.Model):
         return self.DscIssn
 
 
+class TblIdioma(models.Model):
+    CodIdioma = models.AutoField(primary_key=True)
+    DscIdioma = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.DscIdioma
+
+    class Meta:
+        verbose_name = "Idioma"
+        verbose_name_plural = "Idiomas"
+
+
 class TblTitulosArtigos(models.Model):
     CodTitulosArtigos = models.AutoField(primary_key=True)
     DscTitulosArtigos = models.CharField(max_length=255)
@@ -310,15 +322,3 @@ class TblArtigoPublicadoPalavrasChave(models.Model):
         return cls.objects.values('CodPalavrasChavesArtigos__DscArtigoPalavrasChave').annotate(
             total=models.Count('CodPalavrasChavesArtigos')
         ).values_list('CodPalavrasChavesArtigos__DscArtigoPalavrasChave', 'total').order_by('-total')[:10]
-
-
-class TblIdioma(models.Model):
-    CodIdioma = models.AutoField(primary_key=True)
-    DscIdioma = models.CharField(max_length=15)
-
-    def __str__(self):
-        return self.DscIdioma
-
-    class Meta:
-        verbose_name = "Idioma"
-        verbose_name_plural = "Idiomas"
